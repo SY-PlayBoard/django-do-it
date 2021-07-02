@@ -1,9 +1,15 @@
 from django.test import TestCase, Client
 from bs4 import BeautifulSoup
+from django.contrib.auth.models import User
 from .models import Post
+
+
 class TestView(TestCase):
     def setUp(self):
         self.client = Client()
+
+        self.user_trump = User.objects.create_user(username='trump', password='somepassword')
+        self.user_obama = User.objects.create_user(username='obama', password='somepassword')
 
     def navbar_test(self, soup):
         navbar = soup.nav
@@ -16,11 +22,11 @@ class TestView(TestCase):
         home_btn = navbar.find('a', text='Home')
         self.assertEqual(home_btn.attrs['href'], '/')
 
-        home_btn = navbar.find('a', text='Blog')
-        self.assertEqual(home_btn.attrs['href'], '/blog/')
+        blog_btn = navbar.find('a', text='Blog')
+        self.assertEqual(blog_btn.attrs['href'], '/blog/')
 
-        home_btn = navbar.find('a', text='About Me')
-        self.assertEqual(home_btn.attrs['href'], '/about_me/')
+        about_me_btn = navbar.find('a', text='About Me')
+        self.assertEqual(about_me_btn.attrs['href'], '/about_me/')
 
     def test_post_list(self):
         response = self.client.get('/blog/')
@@ -29,15 +35,19 @@ class TestView(TestCase):
         self.assertEqual(soup.title.text, 'Blog')
         self.navbar_test(soup)
         self.assertEqual(Post.objects.count(), 0)
+
         main_area = soup.find('div', id='main-area')
         self.assertIn('아직 게시물이 없습니다', main_area.text)
+
         post_001 = Post.objects.create(
-            title='첫번째 포스트입니다.',
-            content='Hello World. We are the world.',
+            title='첫번째 포스트',
+            content='디지털데일리 권하영기자] 국내 배달앱 2위 요기요',
+            author=self.user_danbi
         )
         post_002 = Post.objects.create(
-            title='두번째 포스트입니다.',
-            content='1등이 전부는 아니잖아요?',
+            title='두번째 포스트',
+            content='원하는 내용을 채운뒤 save 버튼을 눌러보세요!!',
+            author=self.user_obama
         )
         self.assertEqual(Post.objects.count(), 2)
         response = self.client.get('/blog/')
@@ -48,11 +58,15 @@ class TestView(TestCase):
         self.assertIn(post_002.title, main_area.text)
         self.assertNotIn('아직 게시물이 없습니다', main_area.text)
 
+        self.assertIn(self.user_trump.username.upper(), main_area.text)
+        self.assertIn(self.user_obama.username.upper(), main_area.text)
+
     def test_post_detail(self):
         # 0.   Post가 하나 있다.
         post_001 = Post.objects.create(
-            title='첫번째 포스트입니다.',
-            content='Hello World. We are the world.',
+            title='첫번째 포스트',
+            content='디지털데일리 권하영기자] 국내 배달앱 2위 요기요',
+            author=self.user_danbi
         )
         # 0.1  그 포스트의 url은 'blog/1/' 이다.
         self.assertEqual(post_001.get_absolute_url(), '/blog/1/')
@@ -70,6 +84,7 @@ class TestView(TestCase):
         # 1.3  첫 번째 post의 title이 브라우저 탭에 표기되는 페이지 title에 있다.
         self.assertIn(post_001.title, soup.title.text)
 
+
         # 1.4  첫 번째 post의 title이 post-area에 있다.
         main_area = soup.find('div', id='main-area')
         post_area = main_area.find('div', id='post-area')
@@ -77,6 +92,6 @@ class TestView(TestCase):
 
         # 1.5  첫 번째 post의 작성자(author)가 post-area에 있다.
         # 아직 작성 불가
-
+        self.assertIn(self.user_trump.username.upper(), post_area.text)
         # 1.6  첫 번째 post의 content가 post-area에 있다.
         self.assertIn(post_001.content, post_area.text)
