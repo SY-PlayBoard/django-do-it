@@ -102,29 +102,30 @@ class TestView(TestCase):
             author=self.user_trumb
         )
         # 0.1  그 포스트의 url은 'blog/1/' 이다.
-        self.assertEqual(post_001.get_absolute_url(), '/blog/1/')
+        self.assertEqual(self.post_001.get_absolute_url(), '/blog/1/')
 
         # 1.   첫 번째 post의 detail 페이지 테스트
         # 1.1  첫 번째 post url로 접근하면 정상적으로 작동한다. (status code: 200)
-        response = self.client.get(post_001.get_absolute_url())
+        response = self.client.get(self.post_001.get_absolute_url())
         self.assertEqual(response.status_code, 200)
         soup = BeautifulSoup(response.content, 'html.parser')
 
         # 1.2  post_list 페이지와 똑같은 네비게이션 바가 있다.
         # beautifulsoup를 이용하면 간단히 페이지의 태그 요소에 접근이 가능합니다.
         self.navbar_test(soup)
+        self.category_card_test(soup)
 
         # 1.3  첫 번째 post의 title이 브라우저 탭에 표기되는 페이지 title에 있다.
-        self.assertIn(post_001.title, soup.title.text)
+        self.assertIn(self.post_001.title, soup.title.text)
 
 
         # 1.4  첫 번째 post의 title이 post-area에 있다.
         main_area = soup.find('div', id='main-area')
         post_area = main_area.find('div', id='post-area')
-        self.assertIn(post_001.title, post_area.text)
+        self.assertIn(self.post_001.title, post_area.text)
 
         # 1.5  첫 번째 post의 작성자(author)가 post-area에 있다.
         # 아직 작성 불가
         self.assertIn(self.user_trump.username.upper(), post_area.text)
         # 1.6  첫 번째 post의 content가 post-area에 있다.
-        self.assertIn(post_001.content, post_area.text)
+        self.assertIn(self.post_001.content, post_area.text)
