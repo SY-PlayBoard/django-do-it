@@ -1,4 +1,5 @@
 {% extends 'blog/base.html' %}
+
 {% block head_title %}
   {{ post.title }}-Blog
 {% endblock %}
@@ -13,6 +14,7 @@
             <span class="badge badge-secondary float-right">미분류</span>
         {% endif %}
 
+
         <!-- Title -->
         <h1 class="mt-4">{{ post.title }}</h1>
         <h5 class="text-muted">{{ post.hook_text }}</h5>
@@ -23,6 +25,10 @@
         </p>
 
         <hr>
+
+         {% if user.is_authenticated and user == post.author %}
+            <a class="btn btn-info btn-sm float-right" href="/blog/update_post/{{ post.pk }}/" role="button"><i class="fas fa-pen"></i>  Edit Post</a>
+        {% endif %}
 
          <!-- Date/Time -->
         <p>Posted on {{ post.created_at }}</p>
@@ -38,6 +44,7 @@
 
         <hr>
 
+
         <!-- Post Content -->
         <p>{{ post.content }}</p>
 
@@ -49,6 +56,7 @@
             <br>
             <br>
         {% endif %}
+        <hr>
 
         {% if post.file_upload %}
             <a href="{{ post.file_upload.url }}" class="btn btn-outline-dark" role="button" download>
