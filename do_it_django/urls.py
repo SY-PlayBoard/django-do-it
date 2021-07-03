@@ -23,7 +23,9 @@ urlpatterns = [
     path('blog/', include('blog.urls')),
     path('admin/', admin.site.urls),
     path('markdownx/', include('markdownx.urls')),
-#    path('', include('single_pages.urls'))
+    path('accounts/', include('allauth.urls')),
+#    path('', include('single_pages.urls')),
+
 
 
 ]
