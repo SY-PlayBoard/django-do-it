@@ -46,12 +46,13 @@
 
 
         <!-- Post Content -->
-        <p>{{ post.content }}</p>
+        <p>{{ post.get_content_markdown | safe }}</p>
 
+        <!-- tag -->
         {% if p.tags.exists %}
             <i class="fas fa-tags"></i>
-            {% for tag in p.tags.iterator %}
-                <a href="{{ tag.get_absolute_url }}"><span class="badge badge-pill badge-light">{{ tag }}</span></a>
+            {% for tag in p.tags.all%}
+                <a href="{{ tag.get_absolute_url }}" class="badge badge-pill badge-light">{{ tag }}</a>
             {% endfor %}
             <br>
             <br>
