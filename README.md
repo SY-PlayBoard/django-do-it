@@ -55,7 +55,7 @@
     
     <pre>
     <code>
-        <img class="card-img-top" src="https:/ /picsum.photos/seed/{{ p.id }}/800/200" alt="random_image">
+        <im g class="card-img-top" src="https://picsum.photos/seed/{{ p.id }}/800/200" alt="random_image">
    </code>
    </pre>
 ####
