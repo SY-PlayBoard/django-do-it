@@ -52,12 +52,10 @@
     * 로그인이 했을경우에만 글쓰기가 나타난다.
     * 사진 업로드를 안한 경우 https://picsum.photos/을 통해 사진을 임의적으로 가져와 저장.      
     * p.id는 DB에 index를 넣어 고정시켜 저장한다. seed/id로 고정하지 않으면 임의적으로 계속 랜덤으로 사진이 바뀐다.
-    
-    <pre>
-    <code>
-        <im g class="card-img-top" src="https://picsum.photos/seed/{{ p.id }}/800/200" alt="random_image">
-   </code>
-   </pre>
+    * <img> 태그안에
+
+        img class="card-img-top" src="https://picsum.photos/seed/{{ p.id }}/800/200" alt="random_image"
+
 ####
 ![blog](https://user-images.githubusercontent.com/86580625/128176349-aecedca7-9bb7-46b6-bfa7-4439f0ac38a4.jpg)
 
